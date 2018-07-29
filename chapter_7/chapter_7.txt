@@ -1,0 +1,119 @@
+#########################################
+# Introduction
+
+# this is part of a larger json file.
+# https://docs.docker.com/engine/reference/commandline/dockerd/#daemon-configuration-file
+"storage-driver": "btrfs"
+
+
+$ docker container run -it -c 100 alpine ash
+
+$ docker container run -it --cpuset=0,3 alpine ash
+
+$ docker container run -it -m 512M alpine ash
+
+$ docker container run -it --ulimit data=8192 alpine ash
+
+LimitNOFILE=1048576  # Open file descriptor setting
+LimitNPROC=1048576   # Number of processes settings
+LimitCORE=infinity   # Core size settings
+
+#########################################
+# Benchmarking CPU performance
+# Running on CentOS 7.5
+
+$ git clone https://github.com/redhat-performance/docker-performance.git
+$ cd docker-performance/Dockerfiles/
+$ docker image build -t c7perf --rm .
+$ docker image ls
+
+$ mkdir -p /results
+
+$ cd docker-performance/bench/sysbench
+$ export container=no
+$ sh ./run-sysbench.sh  cpu test1
+
+$ mkdir -p /results_container
+$ docker container run -it -v /results_container:/results c7perf bash
+$ /root/docker-performance/bench/sysbench/run-sysbench.sh cpu test1
+
+$ docker container run -it -v /results_container:/results:z c7perf bash
+
+$  setenforce 0
+
+$  setenforce 1
+
+#########################################
+# Benchmarking disk performance
+# Running on Ubuntu 18.04.1
+
+[global]
+ioengine=libaio
+direct=1
+size=16g
+group_reporting
+thread
+filename=/ferrari/fio-test-file
+
+[mixed-random-rw-32x8]
+stonewall
+rw=randrw
+rwmixread=70
+bs=4K
+iodepth=32
+numjobs=8
+runtime=60
+
+$ fio mixed.fio
+
+FROM ubuntu:18.04
+RUN apt-get update
+RUN apt-get -qq install -y fio
+ADD mixed.fio /
+VOLUME ["/ferrari"]
+ENTRYPOINT ["fio"]
+
+
+$ docker image build -t docker_fio_perf .
+
+$ docker container run --rm -v /ferrari:/ferrari docker_fio_perf mixed.fio
+
+$ docker container run --rm -v /ferrari:/ferrari:z docker_fio_perf mixed.fio
+
+#########################################
+# Benchmarking network performance
+# Running on Ubuntu 18.04.1
+
+$ sudo apt-get install -y nuttcp netperf
+
+$ nuttcp -S
+
+$ nuttcp -t <SERVER_IP>
+
+$ nuttcp -r <SERVER_IP>
+
+$ netserver
+
+$ netperf  -H 172.17.0.6 -t TCP_RR
+
+$ netperf  -H 172.17.0.6 -t UDP_RR
+
+#########################################
+# Getting container resource usage using the stats feature
+
+$ docker stats [OPTIONS] [CONTAINERS]
+
+$ docker stats some-mysql backstabbing_turing
+
+#########################################
+# Setting up performance monitoring
+
+$ sudo docker container run \
+    --volume=/:/rootfs:ro \
+    --volume=/var/run:/var/run:rw \
+    --volume=/sys:/sys:ro \
+    --volume=/var/lib/docker/:/var/lib/docker:ro \
+    --publish=8080:8080 \
+    --detach=true \
+    --name=cadvisor \
+    google/cadvisor:latest
