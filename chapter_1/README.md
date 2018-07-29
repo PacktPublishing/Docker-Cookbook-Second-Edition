@@ -12,4 +12,3 @@ Let me know if there is anything I can do better, or if you have any questions.
 
 Thanks,
 Ken Cochrane
-KenCochrane@gmail.com
