@@ -1,0 +1,4 @@
+FROM alpine
+ADD container.sh /
+RUN chmod 755 /container.sh
+CMD ["/container.sh"]

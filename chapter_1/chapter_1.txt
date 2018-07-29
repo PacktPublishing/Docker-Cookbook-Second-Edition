@@ -1,0 +1,192 @@
+#########################################
+# Introduction : The pid namespace
+# using Ubuntu 18.04.1 LTS
+
+# build the docker image
+$ docker build -t ch1_1 -f Dockerfile.ch1_1 .
+
+# start it up
+$ docker run -d --name demo_1 ch1_1
+
+# from the host
+$ ps aux | grep container
+
+# go into the container and run same command
+$ docker exec -it demo_1 ash
+
+$ ps aux | grep container
+
+
+#########################################
+# Introduction: the net namespace
+
+# on the host
+$ ip a
+
+# in the container (same container as above)
+$ ip a
+
+##########################################
+# Introduction: Cgroups
+
+$ sudo apt-get install cgroup-tools
+
+$ lssubsys -M
+
+$ docker container ps
+
+############################################
+# Verifying requirements for Docker installation
+
+$ uname -i
+x86_64
+
+$ uname -r
+4.15.0-29-generic
+
+$ grep device-mapper /proc/devices
+
+# if your kernel version is different then this config file will also be different,
+# change accordingly. Name can be derived from the `uname -r` command above.
+$ grep -i namespaces /boot/config-4.15.0-29-generic
+
+$ grep -i cgroups /boot/config-4.15.0-29-generic
+
+############################################
+# Installing Docker on Ubuntu
+
+# I used Ubuntu 18.04.1 LTS droplet on Digital Ocean
+
+$ sudo apt-get remove docker docker-engine docker.io
+
+$ sudo apt-get update
+
+$ sudo apt-get install \
+        apt-transport-https \
+        ca-certificates \
+        curl \
+        software-properties-common
+
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+$ sudo apt-key fingerprint 0EBFCD88
+
+$ sudo add-apt-repository \
+        "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+        $(lsb_release -cs) \
+        stable"
+
+$ sudo apt-get update
+
+$ sudo apt-get install docker-ce
+
+$ sudo docker container run hello-world
+
+# There's More...
+
+$ sudo systemctl start docker
+
+$ docker info
+
+$ sudo apt-get update
+
+$ sudo systemctl enable docker
+
+$ sudo systemctl stop docker
+
+############################################
+# Installing Docker on CentOS
+
+# I used CentOS 7.5 droplet on Digital Ocean
+
+$ sudo yum remove docker \
+    docker-client \
+    docker-client-latest \
+    docker-common \
+    docker-latest \
+    docker-latest-logrotate \
+    docker-logrotate \
+    docker-selinux \
+    docker-engine-selinux \
+    docker-engine
+
+$ sudo yum install -y yum-utils \
+        device-mapper-persistent-data \
+        lvm2
+
+$ sudo yum-config-manager \
+        --add-repo \
+        https://download.docker.com/linux/centos/docker-ce.repo
+
+$ sudo yum-config-manager --enable docker-ce-test
+
+$ sudo yum install docker-ce
+
+$ sudo systemctl start docker
+
+$ docker container run hello-world
+
+# There's More...
+
+$ sudo systemctl start docker
+
+$ docker info
+
+$ sudo yum -y upgrade
+
+$ sudo systemctl enable docker
+
+$ sudo yum remove docker-ce
+
+$ sudo systemctl stop docker
+
+
+############################################
+# Installing Docker on Linux with an Automated script
+
+$ curl -fsSL get.docker.com -o get-docker.sh
+
+$ sudo sh get-docker.sh
+
+
+############################################
+# Installing Docker for Windows
+
+$ docker container run hello-world
+
+############################################
+# Installing Docker for Mac
+# Run from my Macbook pro
+
+$ sysctl kern.hv_support
+
+$ docker container run hello-world
+
+############################################
+# Pulling an image and running a container
+
+$ docker image pull alpine
+
+$ docker image ls
+
+$ docker container run -id --name demo alpine ash
+
+############################################
+# Adding a nonroot user to administer docker
+
+# Ubuntu 18.04.1 LTS
+
+$ sudo groupadd docker
+
+$ sudo useradd dockertest
+
+$ sudo usermod -aG docker dockertest
+
+############################################
+# Finding help with Docker command line
+
+$ man docker
+
+$ man docker ps
+
+$ man docker-ps
