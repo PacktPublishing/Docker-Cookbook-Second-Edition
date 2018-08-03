@@ -1,0 +1,151 @@
+#########################################
+# Running applications with Docker Compose
+
+$ sudo pip install docker-compose
+
+$ cd wordpress_compose/
+$ cat docker-compose.yml
+  # see docker-compose.yml local to this directory.
+
+$ docker-compose up
+
+$ cat docker-compose.yml
+  # see docker-compose-build.yml local to this directory
+
+ $ docker-compose down
+ $ docker-compose build
+ $ docker-compose exec wordpress bash
+ $ docker-compose ps
+
+#########################################
+# Setting up cluster with Docker Swarm
+
+# setup 3 linux hosts using ubuntu 18.06.1 LTS
+Make sure firewalls don't block ports between
+
+# on host 1
+$ docker swarm init --advertise-addr <host1 private IP>
+
+# on host 2 and 3 run command that came from above, looks like this.
+$ docker swarm join --token SWMTKN-1-2nyaeu0l2rw7fv6wpgco4o1spos0elazjxob3nitlnfy9bv15y-bdch9bt28qsviddpmc38r5hv1 10.10.0.6:2377
+
+$ docker node ls
+$ docker service create --name demo --publish 80:80 nginx
+$ docker service ls
+$ docker service ps demo
+
+$ docker service scale demo=3
+$ docker service ls
+$ docker service ps demo
+
+$ docker swarm join-token manager
+$ docker swarm join --token SWMTKN-1-0trltcq6gwhz9w40j3wpuqedjwviwdgksuz8zulaz6qon118s4-2ui4f15uu7ceow6k2gc9xutb5 10.10.0.6:2377
+
+#########################################
+# Using secrets with Docker Swarm
+
+$ echo "myP@ssWord" | docker secret create my_password -
+   nshsu2028z50n8o55amarpyv2
+
+$ docker service create --name="my-service" --secret="my_password" redis
+
+$ docker container exec $(docker container ls --filter name=my-service -q) cat /run/secrets/my_password
+
+$ docker secret inspect <secret name>
+
+$ docker secret ls
+
+$ docker secret rm <secret name>
+
+$ docker service update --secret-rm <secret name> <service name>
+
+#########################################
+# Setting up a Kubernetes cluster
+
+# macos
+$ brew install kubernetes-cli
+
+# windows
+$ choco install kubernetes-cli
+
+# linux
+$ curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.10.0/bin/linux/amd64/kubectl
+$ chmod +x ./kubectl
+$ sudo mv ./kubectl /usr/local/bin/kubectl
+
+# linux
+$ curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.28.2/minikube-linux-amd64
+$ chmod +x minikube
+$ sudo mv minikube /usr/local/bin/
+
+# macos
+$ curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.28.2/minikube-darwin-amd64
+$ chmod +x minikube
+$ sudo mv minikube /usr/local/bin/
+
+
+$ minikube start --vm-driver=virtualbox
+$ kubectl get nodes
+$ kubectl get pods
+$ kubectl get services
+$ kubectl get rs
+$ minikube stop
+$ minikube delete
+
+#########################################
+# Using secrets with Kubernetes
+
+$ echo -n "MyS3cRet123" > ./secret.txt
+$ kubectl create secret generic my-secret --from-file=./secret.txt
+ secret "my-secret" created
+
+$ kubectl describe secrets/my-secret
+
+# see secret_pod.yml local to this directory
+$ kubectl create -f ./secret_pod.yml
+
+# see secret_env_pod.yml local to this directory
+
+#########################################
+# Scaling up and down in Kubernetes cluster
+
+$ kubectl run my-nginx --image=nginx --replicas=3 --port=80
+
+$ kubectl get pods
+
+$ kubectl get rs
+
+$ kubectl scale --replicas=1 deployment/my-nginx
+$ kubectl get rs
+
+$ kubectl get pods
+
+$ kubectl get services
+
+#########################################
+# Setting up WordPress with Kubernetes cluster
+
+$ kubectl create secret generic mysql-pass --from-literal=password=THE_PASSWORD
+
+$ kubectl get secrets
+
+# see mysql-deployment.yaml local to this directory
+$ kubectl create -f ./mysql-deployment.yaml
+
+$ kubectl get pvc
+
+$ kubectl get pods
+
+# see wordpress-deployment.yml local to this directory
+$ kubectl create -f ./wordpress-deployment.yml
+
+$ kubectl get pvc
+
+$ kubectl get services wordpress
+
+$ minikube service wordpress --url
+
+$ kubectl delete secret mysql-pass
+$ kubectl delete deployment -l app=wordpress
+$ kubectl delete service -l app=wordpress
+$ kubectl delete pvc -l app=wordpress
