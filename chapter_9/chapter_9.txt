@@ -1,0 +1,72 @@
+#########################################
+# Introduction
+
+$ docker search <image name>
+
+$ docker search ubuntu
+
+$ sudo setenforce 0
+
+$ sudo useradd dockertest
+$ sudo passwd dockertest
+$ sudo groupadd docker
+$ sudo gpasswd -a dockertest docker
+
+$ su - dockertest
+$ docker container run -it -v /:/host alpine ash
+
+$ chroot /host
+
+$ shutdown
+
+USERNAME ALL=(ALL) NOPASSWD: ALL
+
+#########################################
+# Setting Mandatory Access Control (MAC) with SELinux
+
+$ getenforce
+
+$ docker info
+
+$ su - dockertest
+$ mkdir ~/dir1
+$ docker run -it -v ~/dir1:/dir1 fedora bash
+$ touch /dir1/file1
+
+$ tail /var/log/audit.log
+
+$ getenforce
+$ docker run -it -v /:/host fedora bash
+$ chroot /host
+$ shutdown
+
+#########################################
+# Allowing writes to volume mounted from the host with SELinux ON
+
+$ docker container run -it -v /tmp:/tmp/host:z alpine ash
+
+$ docker container run -it -v /tmp:/tmp/host:Z alpine ash
+touch /tmp/host/file
+
+#########################################
+# Removing capabilities to breakdown the power of a root user inside a container
+
+$ docker container run --cap-drop <CAPABILITY> <image> <command>
+
+$ docker container run --cap-add <CAPABILITY> <image> <command>
+
+$ docker container run -it --cap-drop  setuid --cap-drop setgid alpine ash
+
+$ docker container run -it --cap-add all --cap-drop sys-admin alpine ash
+
+$ docker container run -it --cap-drop  sys_chroot -v /:/host alpine ash
+$ chroot /host
+
+
+#########################################
+# Sharing namespaces between the host and the container
+$ docker container run -it --net=host alpine ash
+
+$ ip a
+
+$ docker container run -it --net=host --pid=host --ipc=host alpine ash
