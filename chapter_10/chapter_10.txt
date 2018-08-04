@@ -1,0 +1,90 @@
+#########################################
+# Starting Docker in debug mode
+
+$ dockerd  -D
+
+$ cat /etc/docker/daemon.json
+{ "debug": true }
+
+
+#########################################
+# Building Docker binary from the source
+
+$ git clone https://github.com/moby/moby.git
+
+$ apt-get install -y make
+
+$ cd moby
+$ sudo make
+$ sudo make test
+
+#########################################
+# Building images without using cached layers
+
+$ docker image build -t test --no-cache - < Dockerfile
+
+#########################################
+# Building your own bridge for container communication
+
+$ docker network create br0 --subnet 192.168.2.1/24
+$ docker network ls
+
+$ docker container run -d --network br0 --name br0demo redis
+$ docker container inspect br0demo
+
+#########################################
+# Changing the default OCI runtime
+
+# Ubuntu 16.04.5 system, doesn't work on 18.04
+
+$ sudo sh -c "echo 'deb http://download.opensuse.org/repositories/home:/clearcontainers:/clear-containers-3/xUbuntu_$(lsb_release -rs)/ /' >> /etc/apt/sources.list.d/clear-containers.list"
+$ wget -qO - http://download.opensuse.org/repositories/home:/clearcontainers:/clear-containers-3/xUbuntu_$(lsb_release -rs)/Release.key | sudo apt-key add -
+$ sudo -E apt-get update
+$ sudo -E apt-get -y install cc-runtime cc-proxy cc-shim
+
+$ cc-runtime cc-check
+
+# /etc/docker/daemon.json
+{
+  "default-runtime": "cc-runtime",
+  "runtimes": {
+    "cc-runtime": {
+      "path": "/usr/bin/cc-runtime"
+    }
+  }
+}
+
+$ systemctl daemon-reload
+$ systemctl restart docker
+
+$ docker container run -it busybox sh
+
+#########################################
+# Selecting the logging driver for containers
+
+$ dockerd --log-driver=none
+$ dockerd --log-driver=syslog
+
+# /etc/docker/daemon.json
+{
+  "log-driver": "json-file",
+  "log-opts": {
+    "labels": "production_status",
+    "env": "os,customer"
+  }
+}
+
+$ docker container run -it --log-driver syslog alpine ash
+
+#########################################
+# Getting real-time Docker events for containers
+
+$ docker events
+$ docker events --since '2015-01-01'
+
+$ docker events --filter 'event=start'
+$ docker events --filter 'image=alpine:3.5'
+$ docker events --filter 'container=b3619441cb444b87b4'
+$ docker events --format 'ID={{.ID }} Type={{.Type}} Status={{.Status}}'
+
+$ docker events --format '{{json .}}'
