@@ -30,13 +30,13 @@ $ docker info
 
 $ su - dockertest
 $ mkdir ~/dir1
-$ docker run -it -v ~/dir1:/dir1 fedora bash
+$ docker container run -it -v ~/dir1:/dir1 alpine ash
 $ touch /dir1/file1
 
 $ tail /var/log/audit.log
 
 $ getenforce
-$ docker run -it -v /:/host fedora bash
+$ docker container run -it -v /:/host alpine ash
 $ chroot /host
 $ shutdown
 

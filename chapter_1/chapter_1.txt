@@ -151,6 +151,7 @@ $ sudo sh get-docker.sh
 
 ############################################
 # Installing Docker for Windows
+# windows 10 Pro
 
 $ docker container run hello-world
 

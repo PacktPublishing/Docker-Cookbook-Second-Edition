@@ -20,7 +20,7 @@ $ cat docker-compose.yml
 #########################################
 # Setting up cluster with Docker Swarm
 
-# setup 3 linux hosts using ubuntu 18.06.1 LTS
+# setup 3 linux hosts using ubuntu 18.04.1 LTS using VirtualBox
 Make sure firewalls don't block ports between
 
 # on host 1
