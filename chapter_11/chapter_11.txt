@@ -1,0 +1,95 @@
+#########################################
+# Docker for AWS
+
+$ ssh docker@52.201.109.15
+$ docker node ls
+
+#########################################
+# Deploying WordPress on Docker for AWS
+
+$ echo "myDbP@SSwods" | docker secret create root_db_password -
+$ echo "myWpressPw" | docker secret create wp_db_password -
+
+$ docker network create -d overlay wp
+
+$ docker service create \
+    --name mariadb \
+    --replicas 1 \
+    --constraint=node.role==manager \
+    --network wp \
+    --secret source=root_db_password,target=root_db_password \
+    --secret source=wp_db_password,target=wp_db_password \
+    -e MYSQL_ROOT_PASSWORD_FILE=/run/secrets/root_db_password \
+    -e MYSQL_PASSWORD_FILE=/run/secrets/wp_db_password \
+    -e MYSQL_USER=wp \
+    -e MYSQL_DATABASE=wp \
+    mariadb:10.3
+
+$ docker service ps mariadb
+
+$ docker service create \
+    --name wp \
+    --constraint=node.role==worker \
+    --replicas 3 \
+    --network wp \
+    --publish 80:80 \
+    --secret source=wp_db_password,target=wp_db_password,mode=0400 \
+    -e WORDPRESS_DB_USER=wp \
+    -e WORDPRESS_DB_PASSWORD_FILE=/run/secrets/wp_db_password \
+    -e WORDPRESS_DB_HOST=mariadb \
+    -e WORDPRESS_DB_NAME=wp \
+    wordpress:4.9
+
+$ docker service ps wp
+
+$ docker service rm wp
+$ docker service rm mariadb
+
+
+#########################################
+# Docker for Azure
+
+$ docker container run -ti docker4x/create-sp-azure sp1 swarm1 eastus
+
+$ ssh -p 50000 docker@40.76.49.102
+$ docker node ls
+
+
+#########################################
+# Deploying Joomla on Docker for Azure
+
+$ echo "DbP@SSwod1" | docker secret create root_db_password -
+$ echo "myJ000mlaPw" | docker secret create jm_db_password -
+
+$ docker secret ls
+
+$ docker network create -d overlay joomla
+$ docker network ls
+
+$ docker service create \
+    --name mariadb \
+    --replicas 1 \
+    --constraint=node.role==manager \
+    --network joomla \
+    --secret source=root_db_password,target=root_db_password \
+    --secret source=jm_db_password,target=jm_db_password \
+    -e MYSQL_ROOT_PASSWORD_FILE=/run/secrets/root_db_password \
+    -e MYSQL_PASSWORD_FILE=/run/secrets/jm_db_password \
+    -e MYSQL_USER=joomla \
+    -e MYSQL_DATABASE=joomla \
+    mariadb:10.3
+
+
+$ docker service create \
+    --name joomla \
+    --constraint=node.role==manager \
+    --replicas 1 \
+    --network joomla \
+    --publish 80:80 \
+    -e JOOMLA_DB_USER=joomla \
+    -e JOOMLA_DB_PASSWORD="myJ000mlaPw" \
+    -e JOOMLA_DB_HOST=mariadb \
+    -e JOOMLA_DB_NAME=joomla \
+    joomla:3.8
+
+$ docker service ls
