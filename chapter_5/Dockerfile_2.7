@@ -1,0 +1,6 @@
+FROM python:2.7
+RUN pip install flask pytest
+ADD flask/ /flask
+WORKDIR /flask/examples/tutorial
+RUN pip install -e .
+CMD ["/usr/local/bin/pytest"]
