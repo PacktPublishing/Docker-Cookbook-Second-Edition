@@ -43,9 +43,9 @@ Any experience in virtualization technologies such as KVM, XEN, and VMware will 
 
 With the following software and hardware list you can run all code files present in the book (Chapter 1-11).
 ### Software and Hardware List
-| Chapter | Software required | OS required |
+| Chapter | Software required | OS required | Hardware required |
 | -------- | ------------------------------------ | ----------------------------------- |
-| 1 | Docker 18.06 or newer | Windows 10 Pro |
+| 1 | Docker 18.06 or newer | Windows 10 Pro | 4 GB of Ram or more CPU needs to support virtualization
 | 1 | Docker 18.06 or newer | OS X El Capitan 10.11 and newer macOS releases |
 | 1 | Docker 18.06 or newer | Ubuntu 18.04 LTS |
 | 1 | Docker 18.06 or newer | CentOS 7.5 |  
