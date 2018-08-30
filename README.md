@@ -41,7 +41,7 @@ Book is targeted towards developers, system administrators, and DevOps engineers
 It is expected that the reader has basic Linux/Unix skills such as installing packages, editing files, managing services, and so on. 
 Any experience in virtualization technologies such as KVM, XEN, and VMware will be an added advantage
 
-With the following software and hardware list you can run all code files present in the book.
+With the following software and hardware list you can run all code files present in the book (Chapter 1-11).
 ### Software and Hardware List
 | Chapter | Software required | OS required |
 | -------- | ------------------------------------ | ----------------------------------- |
