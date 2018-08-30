@@ -45,7 +45,15 @@ With the following software and hardware list you can run all code files present
 ### Software and Hardware List
 | Chapter | Software required | OS required |
 | -------- | ------------------------------------ | ----------------------------------- |
-|  |  |  |
+| 1 | Docker 18.06 or newer | Windows 10 Pro |
+| 1 | Docker 18.06 or newer | OS X El Capitan 10.11 and newer macOS releases |
+| 1 | Docker 18.06 or newer | Ubuntu 18.04 LTS |
+| 1 | Docker 18.06 or newer | CentOS 7.5 |  
+| 8 | Docker 18.06 or newer | Ubuntu 18.04 LTS |
+| 10 | Docker 18.06 or newer | Ubuntu 16.04.5 LTS |
+| 11 | Docker 18.06 or newer | Amazon AWS account |
+| 11| Docker 18.06 or newer | Azure Cloud account |
+
 
 
 ### Related products <Paste books from the Other books you may enjoy section>
