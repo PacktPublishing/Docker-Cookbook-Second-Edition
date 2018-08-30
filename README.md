@@ -71,7 +71,7 @@ has been working as a DevOps specialist at the IBM Global Cloud Center of Excell
 **Neependra K Khare**
 is the founder and principal consultant at CloudYuga. CloudYuga provides training and consulting on Docker, Kubernetes, GO Programming, and so on. He is one of the Docker Captains and has run Docker Meetup Group in Bangalore for around 4 years. In 2015, he authored a book on Docker, Docker Cookbook. In 2016, he coauthored a course on Cloud Infrastructure Technologies at Edx for the Linux Foundation. Recently, he authored a course on Kubernetes on Edx, for the Linux Foundation.
 
-# Other book by the author
+# Other books by the author
 * [Learning Docker - Second Edition](https://www.packtpub.com/networking-and-servers/learning-docker-second-edition?utm_source=github&utm_medium=repository&utm_campaign=9781786462923)
 * [Docker Bootcamp](https://www.packtpub.com/virtualization-and-cloud/docker-bootcamp?utm_source=github&utm_medium=repository&utm_campaign=9781787286986)
 * [Learning Docker](https://www.packtpub.com/virtualization-and-cloud/learning-docker?utm_source=github&utm_medium=repository&utm_campaign=9781784397937)
