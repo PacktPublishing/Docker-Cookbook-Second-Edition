@@ -9,6 +9,7 @@ $ docker build -t ch1_1 -f Dockerfile.ch1_1 .
 $ docker run -d --name demo_1 ch1_1
 
 # from the host
+# On MacOS Docker runs in a VM so this command won't show data without accessing the VM
 $ ps aux | grep container
 
 # go into the container and run same command
